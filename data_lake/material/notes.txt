@@ -1,0 +1,33 @@
+1.
+
+Enable billing dashboard for other IAM users.
+
+Navigate Account -> IAM User and Role Access to Billing Information -> Edit
+
+Select checkbox for 'Activate IAM Access'
+
+2.
+
+Navigate Billing Preferences ->
+
+Select checkbox for 'Receive Free Tier Usage Alerts' and provide email id.
+ &
+Select checkbox for 'Receive Billing Alerts'
+
+
+3.
+
+Create CloudWatch alarm to monitor your billing based on AWS resources usage.
+
+Select AWS region as N. Virginia as AWS consolidates billing info in this region only.
+
+Navigate CloudWatch -> Alarms -> Billing -> Create Alarm -> Metrics
+-> select metrix (Billing > Total Estimated Charge) -> USD -> Threshold (static)
+-> Threshold value > 5 $ USD -> Next -> Create new topic -> Provide list of email ids
+-> Click Create Topic -> Give name of alarm 'MyEstimatedCharges' -> Create alarm.
+
+4.
+
+Create Billing -> Cost budget -> Set budget -> Give name -> Select monthly budget
+-> Select Fixed -> Budget amount 5 $ USD. -> past budget 5 $. -> Create alerts
+-> Actual costs -> 85% of 5 $.

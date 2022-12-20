@@ -1,0 +1,183 @@
+Lab - Glue Data Catalog Instructions
+Introduction
+The Glue UI has changed, and I have provided instructions on how to configure a crawler
+
+This instruction complements the next video, Lab - Glue Data Catalog. I recommend watching the video first and following these instructions to complete the lab.
+
+Permissions
+We need to first set up permissions for Glue
+
+From the AWS console, Open the IAM service console
+
+From the left navigation pane, Select Roles
+
+Select Create Role
+
+Ensure AWS Service is selected
+
+Choose Glue service [from the list of services shown]
+
+Go to the Permissions Page
+
+In Filter policies, search for Glue
+
+AWS has provided a policy named AWSGlueServiceRole
+
+This policy grants a good set of default permissions that we can use.
+
+For example, the glue service can access any bucket in your account that has aws-glue- in the name
+
+Select the policy
+
+Keep going until we see the Review page
+
+Name the role as AWSGlueServiceRoleDefault
+
+And Create a role
+
+We can now use this role for all our crawlers in this course
+
+S3 Bucket
+We now need to create a new S3 bucket for this lab.
+
+The naming convention we will follow is: aws-glue-yourname
+
+The aws-glue- Prefix is essential, as we granted permission for this Prefix in the IAM role
+
+Ensure you create the Bucket in the region where you want to run the queries.
+
+In my case, I created the bucket aws-glue-cl in N.Virginia
+
+Open the Bucket and click on Create folder
+
+Create a folder iris
+
+Go to the iris folder
+
+And a create a subfolder csv
+
+Upload Data
+In the course distribution, under the DataLake and Iris folder, there is a file called iris_all.csv
+
+Upload the iris_all.csv file to the iris\csv folder in your S3 Bucket
+
+Glue Crawler
+From the AWS console, open the Glue service console
+
+Check the region and use the same region as your S3 Bucket [In my case, I am using N.Virginia]
+
+We are going to create a Crawler that will go and analyze data in the data lake and collect metadata
+
+Configure Crawler
+Select Crawlers from the left navigation pane
+
+And Create Crawler
+
+Let’s name the crawler iris_csv_crawler
+
+Go to the Next page
+
+Specify Input
+For crawler source type, choose Datastores
+
+And select Crawl all folders
+
+Go to the Next page
+
+Add a datastore
+Click on Add a data source
+
+Glue Crawler can crawl and collect metadata from S3, DynamoDB, DocumentDB, MongoDB, Delta Lake, or any other database using JDBC drivers.
+
+Data source: select S3
+
+Location of S3 data: choose In this account
+
+S3 Path: select Browse to your Bucket and folder
+
+Expand your Bucket [aws-glue-yourname]
+
+Expand iris folder
+
+And choose the csv subfolder
+
+Put a slash at the end to indicate folder structure – as we have files under this folder.
+
+Your path should like: s3://aws-glue-yourname/iris/csv/
+
+Add an S3 data source
+
+Go to the Next page
+
+Security settings
+Glue service needs permission to read our data
+
+We grant this permission using IAM Role
+
+Existing IAM role: Select the AWSGlueServiceRoleDefault role that we created earlier
+
+Go to the Next page
+
+Specify Output
+Now, we need to configure where to store the metadata
+
+For target database,
+
+Select Add database
+
+This will open a new browser tab to create the database
+
+For database name, let’s call it demo_db
+
+And Create
+
+Go back to the crawler tab
+
+For the Target database: choose demo_db (if you don’t see the new database, refresh the target database list)
+
+For the Table name prefix, type iris_
+
+The crawler has a few different scheduling options
+
+For now, let’s go with On demand
+
+Go to the Next page to review the configuration
+
+And Create crawler
+
+Run Crawler
+Now, we need to run the crawler
+
+Go Crawlers link
+
+Select iris_csv_crawler from the list
+
+Choose Run
+
+It will take a couple of minutes for the crawler to start, crawl the data, and update the catalog.
+
+Once the job completes, you will notice that for iris_csv_crawler, the Table changes column shows a message 1 created
+
+If you don’t see the count updated, refresh the page
+
+Tables
+Let’s explore the new table now
+
+Select Tables from the navigation pane
+
+Click on the iris_csv table
+
+And this page shows all the details the crawler found
+
+Scroll down to the schema section, and Glue Crawler identified five columns: sepal length, width, petal length, width, and the class
+
+It also discovered data types for each of these columns
+
+Summary
+In this lab, we used a Glue Crawler to collect metadata about our files and store them in Glue Catalog.
+
+Your users can now explore data in the data lake using this catalog.
+
+This catalog also hides the location, folder structure, and file format details from users
+
+Now that our catalog is ready, let’s query using SQL in the next lab.
